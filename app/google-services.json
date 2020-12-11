@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "125075191420",
+    "firebase_url": "https://buddy-cop.firebaseio.com",
+    "project_id": "buddy-cop",
+    "storage_bucket": "buddy-cop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125075191420:android:98b4a61058b45510ad3bf9",
+        "android_client_info": {
+          "package_name": "com.example.buddycop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125075191420-l5rta0fre8s6l8mkm3ffvpsniu4ufjme.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.buddycop",
+            "certificate_hash": "615e9f421448e7163ce0b6cee3af30a5afd052ec"
+          }
+        },
+        {
+          "client_id": "125075191420-jqbna7a21uqpnme6fvi3n02svt5rbtmg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSkJfqrMxOCyddi6z6OGc2e0-FOHJqssE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125075191420-jqbna7a21uqpnme6fvi3n02svt5rbtmg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
