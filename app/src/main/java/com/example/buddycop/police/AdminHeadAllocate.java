@@ -1,9 +1,4 @@
-package com.example.wowhack.police;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.example.buddycop.police;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +12,13 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.wowhack.R;
-import com.example.wowhack.Uploads.PoliceRegestrationUpload;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.buddycop.R;
+import com.example.buddycop.Uploads.PoliceRegestrationUpload;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -109,7 +109,7 @@ public class AdminHeadAllocate extends AppCompatActivity {
         options = new FirebaseRecyclerOptions.Builder<PoliceRegestrationUpload>().setQuery(query1, PoliceRegestrationUpload.class).build();
         adapterHistory = new FirebaseRecyclerAdapter<PoliceRegestrationUpload, FireViewHoldOfficerList>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull FireViewHoldOfficerList holder, int position, @NonNull final PoliceRegestrationUpload model) {
+            protected void onBindViewHolder(@NonNull final FireViewHoldOfficerList holder, int position, @NonNull final PoliceRegestrationUpload model) {
                 String tempDesignation = model.getDesignation();
 
                 if(tempDesignation.equals(designation)){

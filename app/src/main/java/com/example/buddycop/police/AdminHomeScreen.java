@@ -1,23 +1,14 @@
-package com.example.wowhack.police;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.buddycop.police;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.example.wowhack.R;
-import com.example.wowhack.UserCurrentAdmin;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.buddycop.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 public class AdminHomeScreen extends AppCompatActivity {
 
@@ -28,8 +19,8 @@ public class AdminHomeScreen extends AppCompatActivity {
     }
 
     public void logout(View view) {
-        new UserCurrentAdmin(AdminHomeScreen.this).removeUser();
-        startActivity(new Intent(AdminHomeScreen.this, PoliceLogin.class));
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), PoliceLogin.class));
         finish();
     }
 

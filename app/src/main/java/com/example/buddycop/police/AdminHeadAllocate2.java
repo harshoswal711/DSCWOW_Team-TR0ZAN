@@ -1,10 +1,4 @@
-package com.example.wowhack.police;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.example.buddycop.police;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,28 +8,26 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.wowhack.R;
-import com.example.wowhack.Uploads.PoliceRegestrationUpload;
-import com.example.wowhack.Uploads.UploadDuty;
-import com.example.wowhack.Uploads.UploadSector;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.buddycop.R;
+import com.example.buddycop.Uploads.UploadDuty;
+import com.example.buddycop.Uploads.UploadSector;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
-import static com.google.firebase.database.FirebaseDatabase.getInstance;
 
 public class AdminHeadAllocate2 extends AppCompatActivity {
     DatabaseReference reference, reference2;
