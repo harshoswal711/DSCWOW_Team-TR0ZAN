@@ -1,4 +1,4 @@
-package com.example.wowhack;
+package com.example.buddycop;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -3,18 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8C2C2C"
+    android:background="#FFFEFE"
     android:orientation="vertical"
     android:gravity="center_vertical|center_horizontal"
     tools:context=".LoadingScreen">
 
-
-    <TextView
-        android:id="@+id/iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Splash Screen"
-        android:textSize="50dp"
-        android:textColor="#000"/>
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:src="@drawable/applogo"
+    android:layout_margin="80dp"/>
 
 </LinearLayout>

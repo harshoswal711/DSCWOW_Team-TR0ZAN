@@ -1,4 +1,4 @@
-package com.example.wowhack.police;
+package com.example.buddycop.police;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.wowhack.R;
+import com.example.buddycop.R;
+
 
 class LoadingDialog {
     private Activity activity;

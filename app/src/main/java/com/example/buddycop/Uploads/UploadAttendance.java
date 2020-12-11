@@ -1,13 +1,13 @@
-package com.example.wowhack.Uploads;
+package com.example.buddycop.Uploads;
 
 public class UploadAttendance {
-    String takenBy, takenOf, sectorName, sectorHeadName, date, time, lat, lan;
+    String takenBy, takenOf, sectorName, sectorHeadName, date, time, lat, lan, status;
 
     public UploadAttendance() {
     }
 
     public UploadAttendance(String takenBy, String takenOf, String sectorName,
-                            String sectorHeadName, String date, String time, String lat, String lan) {
+                            String sectorHeadName, String date, String time, String lat, String lan, String status) {
         this.takenBy = takenBy;
         this.takenOf = takenOf;
         this.sectorName = sectorName;
@@ -16,6 +16,7 @@ public class UploadAttendance {
         this.time = time;
         this.lat = lat;
         this.lan = lan;
+        this.status = status;
     }
 
     public String getTakenBy() {
@@ -80,5 +81,13 @@ public class UploadAttendance {
 
     public void setLan(String lan) {
         this.lan = lan;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

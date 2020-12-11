@@ -1,45 +1,59 @@
-package com.example.wowhack.police;
+package com.example.buddycop.police;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import com.example.wowhack.R;
-import com.example.wowhack.Uploads.PoliceRegestrationUpload;
-import com.example.wowhack.Uploads.UploadAttendance;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.buddycop.MainActivity;
+import com.example.buddycop.R;
+import com.example.buddycop.Uploads.PoliceRegestrationUpload;
+import com.example.buddycop.Uploads.UploadAttendance;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-
-import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class TakeAttendance extends AppCompatActivity {
     DatabaseReference reference, reference2, reference3;
@@ -48,8 +62,10 @@ public class TakeAttendance extends AppCompatActivity {
     FirebaseRecyclerOptions<PoliceRegestrationUpload> options;
     FirebaseRecyclerAdapter<PoliceRegestrationUpload, FireViewHoldOfficerList> adapterHistory;
     EditText searchOfficer;
-    String sectorName, sectorHeadUid;
+    String sectorName, sectorHeadUid, latitude = "-", longitude = "-";
     String tempFirstName, tempLastName, tempDesignation;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    LatLng latLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +83,20 @@ public class TakeAttendance extends AppCompatActivity {
         sectorName = getIntent().getStringExtra("sectorName");
         sectorHeadUid = getIntent().getStringExtra("sectorHeadUid");
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if(ContextCompat.checkSelfPermission(TakeAttendance.this, Manifest.permission.ACCESS_FINE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(TakeAttendance.this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, 100);
+        }
+        else {
+            getCurrentLoacation();
+        }
+
         LoadData(sectorName);
+
     }
 
     private void LoadData(final String data) {
@@ -75,7 +104,7 @@ public class TakeAttendance extends AppCompatActivity {
         options = new FirebaseRecyclerOptions.Builder<PoliceRegestrationUpload>().setQuery(query1, PoliceRegestrationUpload.class).build();
         adapterHistory = new FirebaseRecyclerAdapter<PoliceRegestrationUpload, FireViewHoldOfficerList>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull FireViewHoldOfficerList holder, int position, @NonNull final PoliceRegestrationUpload model) {
+            protected void onBindViewHolder(@NonNull final FireViewHoldOfficerList holder, int position, @NonNull final PoliceRegestrationUpload model) {
 
                 reference.child(model.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
@@ -84,53 +113,99 @@ public class TakeAttendance extends AppCompatActivity {
                         tempLastName = snapshot.child("lastName").getValue().toString();
                         tempDesignation = snapshot.child("designation").getValue().toString();
 
-                        if(tempDesignation.equals("Constable")){
+                        if (tempDesignation.equals("Constable")) {
                             holder.itemView.setVisibility(View.VISIBLE);
-                            holder.Name.setText(tempFirstName+" "+tempLastName);
+                            holder.Name.setText(tempFirstName + " " + tempLastName);
                             holder.Designation.setText(tempDesignation);
+                            String date1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
-                            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            reference3.child(date1).child(model.getUid()).addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onClick(View v) {
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        String tempStatus = snapshot.child("status").getValue().toString();
 
-                                    PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-                                    popupMenu.inflate(R.menu.popup_menu);
-                                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                        @Override
-                                        public boolean onMenuItemClick(MenuItem item) {
-                                            switch (item.getItemId()) {
-                                                case R.id.open:
-                                                    String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-
-                                                    Long tsLong = System.currentTimeMillis()/1000;
-                                                    String ts = tsLong.toString();
-
-                                                    final UploadAttendance u = new UploadAttendance(sectorHeadUid, model.getUid(), sectorName, sectorHeadUid,
-                                                            date, ts, "-","-");
-
-                                                    reference3.child(date).child(model.getUid()).setValue(u).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            Toast.makeText(TakeAttendance.this, "Attendance Marked successfully..", Toast.LENGTH_SHORT).show();
-                                                        }
-
-                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(TakeAttendance.this, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                    return true;
-                                                case R.id.delete:
-
-                                                    return true;
-                                            }
-                                            return true;
+                                        if(tempStatus.equals("present")){
+                                            holder.itemView.setBackground(getResources().getDrawable(R.drawable.button4));
                                         }
-                                    });
-                                    popupMenu.show();
+                                        else if(tempStatus.equals("absent")){
+                                            holder.itemView.setBackground(getResources().getDrawable(R.drawable.button3));
+                                        }
+
+                                    } else {
+                                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+                                                popupMenu.inflate(R.menu.popup_menu);
+                                                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                                    @Override
+                                                    public boolean onMenuItemClick(MenuItem item) {
+                                                        switch (item.getItemId()) {
+                                                            case R.id.open:
+                                                                String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+
+                                                                Long tsLong = System.currentTimeMillis() / 1000;
+                                                                String ts = tsLong.toString();
+
+                                                                final UploadAttendance u = new UploadAttendance(sectorHeadUid, model.getUid(), sectorName, sectorHeadUid,
+                                                                        date, ts, latitude, longitude, "present");
+
+                                                                reference3.child(date).child(model.getUid()).setValue(u).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+                                                                        Toast.makeText(TakeAttendance.this, "Attendance Marked successfully..", Toast.LENGTH_SHORT).show();
+                                                                    }
+
+                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Toast.makeText(TakeAttendance.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
+
+                                                                return true;
+                                                            case R.id.delete:
+                                                                String date1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+
+                                                                Long tsLong1 = System.currentTimeMillis() / 1000;
+                                                                String ts1 = tsLong1.toString();
+
+                                                                final UploadAttendance u1 = new UploadAttendance(sectorHeadUid, model.getUid(), sectorName, sectorHeadUid,
+                                                                        date1, ts1, latitude, longitude, "absent");
+
+                                                                reference3.child(date1).child(model.getUid()).setValue(u1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+                                                                        Toast.makeText(TakeAttendance.this, "Attendance Marked successfully..", Toast.LENGTH_SHORT).show();
+                                                                    }
+
+                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Toast.makeText(TakeAttendance.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
+
+                                                                return true;
+                                                        }
+                                                        return true;
+                                                    }
+                                                });
+                                                popupMenu.show();
+                                            }
+                                        });
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
                                 }
                             });
+
                         }
                     }
 
@@ -150,6 +225,39 @@ public class TakeAttendance extends AppCompatActivity {
         };
         adapterHistory.startListening();
         recyclerView.setAdapter(adapterHistory);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentLoacation() {
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                Location location = task.getResult();
+                if (location != null) {
+                    Geocoder geocoder = new Geocoder(TakeAttendance.this, Locale.getDefault());
+
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
+                                location.getLongitude(), 1);
+                        latLng = new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
+
+                        latitude = String.valueOf(addresses.get(0).getLatitude());
+                        longitude = String.valueOf(addresses.get(0).getLongitude());
+
+                        Toast.makeText(TakeAttendance.this, ""+latitude+""+longitude, Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                }
+            }
+        });
+    }
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(TakeAttendance.this, PoliceHomeScreen.class));
+        finish();
     }
 
 }

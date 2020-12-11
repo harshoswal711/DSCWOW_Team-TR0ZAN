@@ -1,4 +1,4 @@
-package com.example.wowhack.Uploads;
+package com.example.buddycop.Uploads;
 
 public class PoliceRegestrationUpload {
     String firstName, lastName, mobileNo, designation, email, password, uid;

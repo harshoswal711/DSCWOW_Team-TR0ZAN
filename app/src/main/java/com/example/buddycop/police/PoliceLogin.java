@@ -1,8 +1,6 @@
-package com.example.wowhack.police;
+package com.example.buddycop.police;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,11 +8,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.wowhack.R;
-import com.example.wowhack.SelectUserType;
-import com.example.wowhack.UserCurrent;
-import com.example.wowhack.UserCurrentAdmin;
-import com.example.wowhack.general.GeneralLogin;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.buddycop.R;
+import com.example.buddycop.StartUpActivity;
+import com.example.buddycop.UserCurrent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -39,11 +39,17 @@ public class PoliceLogin extends AppCompatActivity {
         reference = FirebaseDatabase.getInstance().getReference("credentials").child("police");
 
         loadingDialog = new LoadingDialog(PoliceLogin.this);
-        checkUser();
 
         if (fAuth.getCurrentUser() != null) {
-            startActivity(new Intent(PoliceLogin.this, PoliceHomeScreen.class));
-            finish();
+            if(fAuth.getCurrentUser().getEmail().equals("admin@gmail.com")){
+                startActivity(new Intent(getApplicationContext(), AdminHomeScreen.class));
+                finish();
+            }
+            else {
+                startActivity(new Intent(PoliceLogin.this, PoliceHomeScreen.class));
+                finish();
+            }
+
         }
 
         mEmail = findViewById(R.id.username);
@@ -52,14 +58,6 @@ public class PoliceLogin extends AppCompatActivity {
 
     }
 
-    private void checkUser() {
-        String type = new UserCurrentAdmin(PoliceLogin.this).getLoginid();
-        if(type.equals("admin")){
-            startActivity(new Intent(PoliceLogin.this, AdminHomeScreen.class));
-            finish();
-        }
-
-    }
     public void sendToPoliceRegestration(View view) {
         startActivity(new Intent(PoliceLogin.this, PoliceRegestration.class));
         finish();
@@ -67,7 +65,7 @@ public class PoliceLogin extends AppCompatActivity {
 
     public void sendToSelecUserType(View view) {
         new UserCurrent(PoliceLogin.this).removeUser();
-        startActivity(new Intent(PoliceLogin.this, SelectUserType.class));
+        startActivity(new Intent(PoliceLogin.this, StartUpActivity.class));
         finish();
     }
 
@@ -90,47 +88,65 @@ public class PoliceLogin extends AppCompatActivity {
             return;
         }
 
-        if(email.equals("admin") && password.equals("admin@123"))
-        {
-            loadingDialog.dismissDialog();
-            new UserCurrentAdmin(PoliceLogin.this).setLoginid("admin");
-            Toast.makeText(PoliceLogin.this, "Login Succesful!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getApplicationContext(), AdminHomeScreen.class));
-            finish();
-        }
-        else {
-
-            fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        reference.child(fAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.exists()){
+        fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    reference.child(fAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                if(fAuth.getCurrentUser().getEmail().equals("admin@gmail.com")){
+                                    loadingDialog.dismissDialog();
+                                    Toast.makeText(PoliceLogin.this, "Login Succesful!", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(getApplicationContext(), AdminHomeScreen.class));
+                                    finish();
+                                }
+                                else {
                                     loadingDialog.dismissDialog();
                                     Toast.makeText(PoliceLogin.this, "Login Succesful!", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(getApplicationContext(), PoliceHomeScreen.class));
                                     finish();
                                 }
-                                else {
-                                    loadingDialog.dismissDialog();
-                                    Toast.makeText(PoliceLogin.this, "You are not police..", Toast.LENGTH_SHORT).show();
-                                }
+                            } else {
+                                loadingDialog.dismissDialog();
+                                Toast.makeText(PoliceLogin.this, "You are not police..", Toast.LENGTH_SHORT).show();
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-                    } else {
-                        loadingDialog.dismissDialog();
-                        Toast.makeText(PoliceLogin.this, "Error! Unable To Login", Toast.LENGTH_SHORT).show();
-                    }
+                        }
+                    });
+                } else {
+                    loadingDialog.dismissDialog();
+                    Toast.makeText(PoliceLogin.this, "Error! Unable To Login", Toast.LENGTH_SHORT).show();
                 }
-            });
+            }
+        });
 
-        }
+
+    }
+    @Override
+    public void onBackPressed() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(PoliceLogin.this);
+        builder.setMessage("Are you sure want to exit from app?");
+        builder.setCancelable(false);
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        //here exit app alert close............................................
     }
 }
