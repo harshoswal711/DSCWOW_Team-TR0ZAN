@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,13 +17,19 @@ import com.example.buddycop.R;
 import com.example.buddycop.Uploads.UploadFir;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
+
+import java.util.ArrayList;
 
 import static com.google.firebase.database.FirebaseDatabase.getInstance;
 
 public class PoliceCreateFir extends AppCompatActivity {
-    EditText mFirNo, mVictimName, mDescription, mPlace, mLat, mLan, mWitness;
+    EditText mFirNo, mVictimName, mPlace, mLat, mLan, mWitness;
     String firNo, victimName, description, place, lat = "-", lan = "-", witness;
     DatabaseReference reference;
+    SearchableSpinner spinner;
+    ArrayAdapter<String> adapter;
+    ArrayList<String> spinnerDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,30 +43,56 @@ public class PoliceCreateFir extends AppCompatActivity {
 
         mFirNo = findViewById(R.id.firno);
         mVictimName = findViewById(R.id.victim_name);
-        mDescription = findViewById(R.id.offencedesc);
+        spinner = findViewById(R.id.offencedesc);
         mPlace = findViewById(R.id.offenceplace);
         mLat = findViewById(R.id.latitude);
         mLan = findViewById(R.id.longitude);
         mWitness = findViewById(R.id.witness);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        spinnerDataList = new ArrayList<>();
+        spinnerDataList.add(0, "Choose Your Description");
+        spinnerDataList.add("Money theft");
+        spinnerDataList.add("Drunk and drive");
+        spinnerDataList.add("Burglary");
+        spinnerDataList.add("Vehicle Accident");
+
+        adapter = new ArrayAdapter<String>(PoliceCreateFir.this, android.R.layout.simple_spinner_dropdown_item,
+                spinnerDataList);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                description = spinner.getSelectedItem().toString();
+                Toast.makeText(PoliceCreateFir.this, "" + description, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
     }
 
     public void onFileFir(View view) {
         firNo = mFirNo.getText().toString();
         victimName = mVictimName.getText().toString();
-        description = mDescription.getText().toString();
         place = mPlace.getText().toString();
         lat = mLat.getText().toString();
         lan = mLan.getText().toString();
         witness = mWitness.getText().toString();
 
-        if (firNo.equals("") || victimName.equals("") || description.equals("")
+        if (firNo.equals("") || victimName.equals("") || description.equals("Choose Your Description")
                 || place.equals("") || witness.equals("")) {
             if (firNo.equals("")) {
                 mFirNo.setError("Fir No is required.");
             } else if (victimName.equals("")) {
                 mVictimName.setError("Victim Name or Reporter Name is required.");
-            } else if (description.equals("")) {
-                mDescription.setError("Description is required.");
+            } else if (description.equals("Choose Your Description")) {
+                Toast.makeText(this, "Description is required", Toast.LENGTH_SHORT).show();
             } else if (place.equals("")) {
                 mPlace.setError("Place is required.");
             } else if (witness.equals("")) {

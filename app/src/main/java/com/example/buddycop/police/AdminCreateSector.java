@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.buddycop.R;
 import com.example.buddycop.Uploads.UploadSector;
@@ -26,9 +27,9 @@ import java.util.ArrayList;
 import static com.google.firebase.database.FirebaseDatabase.getInstance;
 
 public class AdminCreateSector extends AppCompatActivity {
-    String sectorName;
+    String sectorName, lat, lan;
     DatabaseReference reference;
-    EditText mSectorName;
+    EditText mSectorName, mLatitude, mLongitude;
     LoadingDialog loadingDialog;
     ListView mListView;
     ArrayList<String> myArrayList = new ArrayList<>();
@@ -40,8 +41,14 @@ public class AdminCreateSector extends AppCompatActivity {
         reference = getInstance().getReference("sector");
         loadingDialog = new LoadingDialog(AdminCreateSector.this);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Admin Create Sector");
+        setSupportActionBar(toolbar);
+
         mSectorName = findViewById(R.id.enterSectorName);
         mListView = findViewById(R.id.listview);
+        mLatitude = findViewById(R.id.latitude11);
+        mLongitude = findViewById(R.id.longitude11);
 
         final ArrayAdapter<String> myArrayAdapter = new ArrayAdapter<String>(AdminCreateSector.this, android.R.layout.simple_list_item_1, myArrayList);
         mListView.setAdapter(myArrayAdapter);
@@ -93,12 +100,22 @@ public class AdminCreateSector extends AppCompatActivity {
         loadingDialog.setText("Creating Sector..");
 
         sectorName = mSectorName.getText().toString().trim();
+        lat = mLatitude.getText().toString().trim();
+        lan = mLongitude.getText().toString().trim();
+
         if(sectorName.equals("")){
             loadingDialog.dismissDialog();
             mSectorName.setError("Enter Sector Name First");
+        }else if(lat.equals("")){
+            loadingDialog.dismissDialog();
+            mLatitude.setError("Latitude is required");
+        }
+        else if(lan.equals("")){
+            loadingDialog.dismissDialog();
+            mLongitude.setError("Longitude is required");
         }
         else {
-            final UploadSector u = new UploadSector(sectorName, "-", "-","-");
+            final UploadSector u = new UploadSector(sectorName, "-", lat, lan);
 
             reference.child(sectorName).setValue(u).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

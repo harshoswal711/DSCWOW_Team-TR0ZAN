@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +43,10 @@ public class AdminHeadAllocate2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_head_allocate2);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Admin Head Allocate To Sector");
+        setSupportActionBar(toolbar);
 
         reference = FirebaseDatabase.getInstance().getReference("sector");
         reference2 = FirebaseDatabase.getInstance().getReference("duty");

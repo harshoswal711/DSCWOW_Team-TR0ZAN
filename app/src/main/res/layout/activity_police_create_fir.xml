@@ -62,13 +62,12 @@
             android:textSize="18dp"
             android:textStyle="bold" />
 
-        <EditText
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/offencedesc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description of offence"
-            android:inputType="textMultiLine"
-            android:padding="10dp" />
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
 
 
         <TextView
@@ -131,7 +130,7 @@
             android:id="@+id/witness"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="witnesses(if any)"
+            android:hint="witnesses"
             android:inputType="textMultiLine"
             android:padding="10dp" />
 

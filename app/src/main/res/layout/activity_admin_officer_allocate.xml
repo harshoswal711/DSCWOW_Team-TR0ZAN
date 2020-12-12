@@ -7,6 +7,9 @@
     android:orientation="vertical"
     tools:context=".police.AdminOfficerAllocate">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <EditText
         android:id="@+id/searchViewOfficer"
