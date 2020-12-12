@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/toolbar"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="invisible">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

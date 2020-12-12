@@ -178,7 +178,7 @@ public class PoliceHomeScreen extends AppCompatActivity {
         } else {
             String date1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
-            reference3.child(date1).child(uid).addValueEventListener(new ValueEventListener() {
+            reference3.child(date1).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
