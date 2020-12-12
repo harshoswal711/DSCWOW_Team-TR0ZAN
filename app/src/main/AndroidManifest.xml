@@ -39,19 +39,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NOCActivity" />
-        <activity android:name=".PoliceHomePageActivity" />
-        <activity android:name=".CitizenIdentityActivity" />
-        <activity android:name=".CitizenWantedListActivity" />
         <activity android:name=".CitizenCrimeMapActivity" />
-        <activity android:name=".CitizenEmergencyActivity" />
-        <activity android:name=".CitizenFirActivity" />
-        <activity android:name=".CitizenHomePageActivity" />
-        <activity android:name=".StartUpActivity"/>
-        <activity android:name=".PoliceLogInActivity" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".LogInActivity" />
-        <activity android:name=".MainActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
