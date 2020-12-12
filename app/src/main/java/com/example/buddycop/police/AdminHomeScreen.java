@@ -85,4 +85,8 @@ public class AdminHomeScreen extends AppCompatActivity {
         //here exit app alert close............................................
     }
 
+    public void onEnterWantedData(View view) {
+        startActivity(new Intent(AdminHomeScreen.this, AdminEnterWanted.class));
+        finish();
+    }
 }

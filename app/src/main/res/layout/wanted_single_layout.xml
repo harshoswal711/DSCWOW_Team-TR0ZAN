@@ -1,74 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/wanted_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="15dp"
+    android:clickable="false"
+    android:focusable="true"
+    android:background="@drawable/button2"
+    android:foreground="?android:selectableItemBackground"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="10dp"
+    android:visibility="visible">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/criminal_photo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
 
-        android:layout_marginTop="16sp"
-        android:src="@drawable/login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/wanted_layout_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16sp"
-        android:text="Name"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.077"
-        app:layout_constraintStart_toEndOf="@+id/criminal_photo"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/wantedImageRecycler"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_margin="15dp"
+            android:src="@drawable/wanted"
+            />
 
-    <TextView
-        android:id="@+id/wanted_layout_crime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Crime"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.077"
-        app:layout_constraintStart_toEndOf="@+id/criminal_photo"
-        app:layout_constraintTop_toBottomOf="@+id/wanted_layout_name" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="#4A4646" />
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="120dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/wantedNameRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:text="hey"
+            android:textAlignment="center"
+            android:textColor="#3F51B5"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/wanted_layout_city"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="City"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.073"
-        app:layout_constraintStart_toEndOf="@+id/criminal_photo"
-        app:layout_constraintTop_toBottomOf="@+id/wanted_layout_crime" />
+        <TextView
+            android:id="@+id/wantedCrimeRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="there"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:layout_marginBottom="5dp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/report_btn"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="32dp"
-        android:text="Report"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/wantedPlaceRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="there"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:layout_marginBottom="5dp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

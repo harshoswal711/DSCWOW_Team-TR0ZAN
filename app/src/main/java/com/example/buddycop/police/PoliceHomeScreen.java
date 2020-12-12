@@ -298,4 +298,9 @@ public class PoliceHomeScreen extends AppCompatActivity {
         startActivity(new Intent(PoliceHomeScreen.this, CitizenCrimeMapActivity.class));
         finish();
     }
+
+    public void onWantedDatabase(View view) {
+        startActivity(new Intent(PoliceHomeScreen.this, PoliceWantedDB.class));
+        finish();
+    }
 }

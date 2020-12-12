@@ -44,10 +44,10 @@ public class WantedAdapter extends FirestoreRecyclerAdapter<Wanted,WantedAdapter
         public WantedHolder(@NonNull View itemView) {
             super(itemView);
 
-            fview=itemView.findViewById(R.id.wanted_layout);
+            //fview=itemView.findViewById(R.id.wanted_layout);
             name =fview.findViewById(R.id.wanted_layout_name);
             crime =fview.findViewById(R.id.wanted_layout_crime);
-            city=fview.findViewById(R.id.wanted_layout_city);
+            //city=fview.findViewById(R.id.wanted_layout_city);
 
         }
     }
