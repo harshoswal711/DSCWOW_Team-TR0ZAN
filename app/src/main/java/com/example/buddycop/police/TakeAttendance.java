@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -71,6 +72,12 @@ public class TakeAttendance extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_attendance);
+
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Take Attendance");
+        setSupportActionBar(toolbar);
+
         reference = FirebaseDatabase.getInstance().getReference("credentials").child("police");
         reference2 = FirebaseDatabase.getInstance().getReference("duty");
         reference3 = FirebaseDatabase.getInstance().getReference("attendance");

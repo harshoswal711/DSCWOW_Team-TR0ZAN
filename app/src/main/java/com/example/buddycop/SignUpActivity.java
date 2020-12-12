@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.buddycop.Uploads.GeneralRegestrationUpload;
+import com.example.buddycop.police.PoliceLogin;
+import com.example.buddycop.police.PoliceRegestration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,6 +47,10 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         loadingDialog = new LoadingDialog(SignUpActivity.this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Citizen Registration");
+        setSupportActionBar(toolbar);
 
         mFirstName = findViewById(R.id.first_name);
         mLastName = findViewById(R.id.last_name);
@@ -138,5 +144,11 @@ public class SignUpActivity extends AppCompatActivity {
     public void sendToGeneralLogin(View view) {
         startActivity(new Intent(SignUpActivity.this, LogInActivity.class));
         finish();
+    }
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(SignUpActivity.this, LogInActivity.class));
+        finish();
+        //here exit app alert close............................................
     }
 }

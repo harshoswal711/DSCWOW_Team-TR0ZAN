@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.buddycop.R;
 import com.example.buddycop.Uploads.PoliceRegestrationUpload;
@@ -42,6 +43,10 @@ public class PoliceRegestration extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_police_regestration);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Police Registration");
+        setSupportActionBar(toolbar);
 
         loadingDialog = new LoadingDialog(PoliceRegestration.this);
 
@@ -164,5 +169,12 @@ public class PoliceRegestration extends AppCompatActivity {
     public void sendToPoliceLogin(View view) {
         startActivity(new Intent(PoliceRegestration.this, PoliceLogin.class));
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(PoliceRegestration.this, PoliceLogin.class));
+        finish();
+        //here exit app alert close............................................
     }
 }

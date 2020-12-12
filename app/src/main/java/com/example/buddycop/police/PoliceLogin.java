@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.buddycop.R;
 import com.example.buddycop.StartUpActivity;
@@ -37,6 +38,10 @@ public class PoliceLogin extends AppCompatActivity {
         setContentView(R.layout.activity_police_login);
         fAuth = FirebaseAuth.getInstance();
         reference = FirebaseDatabase.getInstance().getReference("credentials").child("police");
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Police Login");
+        setSupportActionBar(toolbar);
 
         loadingDialog = new LoadingDialog(PoliceLogin.this);
 
