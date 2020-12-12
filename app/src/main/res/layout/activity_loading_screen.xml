@@ -69,7 +69,8 @@
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             android:layout_height="300dp"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            tools:ignore="MissingClass" />
 
     </RelativeLayout>
 
