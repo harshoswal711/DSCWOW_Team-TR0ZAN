@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.buddycop.Uploads.GeneralRegestrationUpload;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +22,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,151 +32,111 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
-
-    private EditText firstName;
-    private EditText lastName;
-    private EditText city;
-    private EditText password;
-    private EditText repassword;
-    private EditText companyName;
-    private EditText phone;
-    private EditText email;
-    private Button submitButton;
-    private FirebaseAuth mAuth;
-    private Toolbar signUpToolbar;
-
+    DatabaseReference reference;
+    EditText mFirstName, mLastName, mPassword, mConfirmPassword, mMobileNo, mEmail;
+    String firstName, lastName, mobileNo,  password, confirmPassword,
+            email;
+    Button mBtnSignUp;
+    LoadingDialog loadingDialog;
+    FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        loadingDialog = new LoadingDialog(SignUpActivity.this);
 
-        mAuth = FirebaseAuth.getInstance();
+        mFirstName = findViewById(R.id.first_name);
+        mLastName = findViewById(R.id.last_name);
+        mPassword = findViewById(R.id.password);
+        mConfirmPassword = findViewById(R.id.confirmpassword);
+        mBtnSignUp = findViewById(R.id.btnSignUp);
+        mMobileNo = findViewById(R.id.mobile_no);
+        mEmail = findViewById(R.id.email);
 
-        signUpToolbar= findViewById(R.id.signUp_toolbar);
-        setSupportActionBar(signUpToolbar);
-        getSupportActionBar().setTitle("SIGN UP");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        reference = FirebaseDatabase.getInstance().getReference("credentials").child("general");
+        fAuth = FirebaseAuth.getInstance();
 
-        signUpToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+        mBtnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(),LogInActivity.class));
-            }
-        });
+                loadingDialog.startLoadingDialog();
+                loadingDialog.setText("Creating Account..");
+                firstName = mFirstName.getText().toString();
+                lastName = mLastName.getText().toString();
+                mobileNo = mMobileNo.getText().toString();
+                email = mEmail.getText().toString();
+                password = mPassword.getText().toString();
+                confirmPassword = mConfirmPassword.getText().toString();
 
-
-        firstName = findViewById(R.id.firstName);
-        lastName = findViewById(R.id.lastName);
-        city = findViewById(R.id.city);
-        password = findViewById(R.id.password);
-        email = findViewById(R.id.email);
-        companyName = findViewById(R.id.aadhar);
-        phone = findViewById(R.id.phoneNo);
-        repassword = findViewById(R.id.repassword);
-        submitButton = findViewById(R.id.submit);
-
-
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String sFirstName = firstName.getText().toString();
-                String sLastName = lastName.getText().toString();
-                String sCity = city.getText().toString();
-                String sPassword = password.getText().toString();
-                String sPhoneNo = phone.getText().toString();
-                String sRePassword = repassword.getText().toString();
-                String sCompanyName = companyName.getText().toString();
-                String sEmail = email.getText().toString();
-
-                if (isValid(sEmail)) {
-
-                    if (!TextUtils.isEmpty(sEmail) || !TextUtils.isEmpty(sPassword) || !TextUtils.isEmpty(sFirstName) || !TextUtils.isEmpty(sCompanyName) || !TextUtils.isEmpty(sPhoneNo) || !TextUtils.isEmpty(sRePassword) || !TextUtils.isEmpty(sCity)) {
-
-                        if (sRePassword.equals(sPassword)) {
-                            register_user(sFirstName, sLastName, sEmail, sPassword, sCity, sCompanyName, sPhoneNo);
-                        } else {
-                            Toast.makeText(getBaseContext(), "Passwords do not match.Enter again",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else {
-                        Toast.makeText(getBaseContext(), "Please Enter all the neccessary fields.",
-                                Toast.LENGTH_SHORT).show();
-
+                if (firstName.equals("") || lastName.equals("") || mobileNo.equals("")
+                        || password.equals("") || confirmPassword.equals("")
+                        || password.length() < 6 || email.equals("")) {
+                    if (firstName.equals("")) {
+                        mFirstName.setError("First name is required.");
+                        loadingDialog.dismissDialog();
+                    } else if (lastName.equals("")) {
+                        mLastName.setError("Last name is required.");
+                        loadingDialog.dismissDialog();
+                    } else if (password.equals("")) {
+                        mPassword.setError("Password is required.");
+                        loadingDialog.dismissDialog();
+                    } else if (confirmPassword.equals("")) {
+                        mConfirmPassword.setError("Confirmation of password is required.");
+                        loadingDialog.dismissDialog();
+                    } else if (password.length() < 6) {
+                        mPassword.setError("Password minimum length should be 6.");
+                        loadingDialog.dismissDialog();
+                    } else if (email.equals("")) {
+                        mEmail.setError("Enter your email");
+                        loadingDialog.dismissDialog();
                     }
+                } else {
+                    if (confirmPassword.equals(password)) {
+                        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
 
-                }else
-                {
-                    Toast.makeText(SignUpActivity.this, "Enter Correct Email", Toast.LENGTH_SHORT).show();
+                                    final GeneralRegestrationUpload u = new GeneralRegestrationUpload(firstName, lastName,mobileNo, email,
+                                            confirmPassword, fAuth.getCurrentUser().getUid());
 
-                }
-            }
-        });
-
-    }
-
-    public static boolean isValid(String email)
-    {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)"+"(com|in|org)"+
-                "$";
-
-        Pattern pat = Pattern.compile(emailRegex);
-        if (email == null)
-            return false;
-        return pat.matcher(email).matches();
-    }
-
-    public void register_user(final String sFirstName, final String sLastName, String sEmail, String sPassword, final String sCity, final String sCompanyName, final String sPhoneNo){
-        mAuth.createUserWithEmailAndPassword(sEmail, sPassword)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            FirebaseUser current_user=FirebaseAuth.getInstance().getCurrentUser();
-                            String uid=current_user.getUid();
-                            String sName=sFirstName +" "+sLastName;
-
-                            Map<String,Object> user =new HashMap<>();
-                            user.put("Name",sName);
-                            user.put("City",sCity);
-                            user.put("Company Name",sCompanyName);
-                            user.put("Phone no",sPhoneNo);
-                            user.put("Image","default");
-
-                            db.collection("users")
-                                    .add(user)
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    reference.child(fAuth.getCurrentUser().getUid()).setValue(u).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
-                                        public void onSuccess(DocumentReference documentReference) {
-                                            Intent mainintent=new Intent(getBaseContext(), CitizenHomePageActivity.class);
-                                            startActivity(mainintent);
+                                        public void onSuccess(Void aVoid) {
+                                            startActivity(new Intent(SignUpActivity.this, CitizenHomePageActivity.class));
                                             finish();
+                                            loadingDialog.dismissDialog();
                                         }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
+                                    }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-
+                                            loadingDialog.dismissDialog();
+                                            Toast.makeText(SignUpActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
-
-
-                        } else {
-
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(getBaseContext(), "Cannot sign up.Please check that all the fields are filled correctly.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-
+                                } else {
+                                    Toast.makeText(SignUpActivity.this, "Error..", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }
-                });
+                    else {
+                        loadingDialog.dismissDialog();
+                        mConfirmPassword.setError("Password doesn't match.");
+                    }
+                }
+
+                ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            }
+        });
     }
 
+    public void sendToGeneralLogin(View view) {
+        startActivity(new Intent(SignUpActivity.this, LogInActivity.class));
+        finish();
+    }
 }

@@ -3,6 +3,8 @@ package com.example.buddycop;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -20,11 +23,9 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class NewFirFragment extends Fragment {
 
-
-
     private FirebaseAuth mAuth;
     private View mainView;
-
+    Button btn;
     public NewFirFragment() {
         // Required empty public constructor
     }
@@ -34,14 +35,20 @@ public class NewFirFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mainView= inflater.inflate(R.layout.fragment_new_fir, container, false);
-
-
-
-
+        mainView = inflater.inflate(R.layout.fragment_new_fir, container, false);
         return mainView;
-
-
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        btn = view.findViewById(R.id.firsubmit);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
 }

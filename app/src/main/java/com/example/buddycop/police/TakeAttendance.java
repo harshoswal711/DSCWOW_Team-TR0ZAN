@@ -254,6 +254,7 @@ public class TakeAttendance extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         startActivity(new Intent(TakeAttendance.this, PoliceHomeScreen.class));

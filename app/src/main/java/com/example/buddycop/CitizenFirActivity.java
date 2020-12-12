@@ -5,6 +5,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -13,7 +16,6 @@ public class CitizenFirActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private SectionPagerAdapter mSectionPagerAdapter;
     private TabLayout mTabLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,5 +30,6 @@ public class CitizenFirActivity extends AppCompatActivity {
 
         mTabLayout= findViewById(R.id.main_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+
     }
 }
