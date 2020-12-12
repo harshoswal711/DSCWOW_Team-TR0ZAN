@@ -1,30 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/client_log_in"
     android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     android:layout_height="match_parent"
     tools:context=".StartUpActivity">
-
-    <include
-        android:id="@+id/start_app_bar"
-        layout="@layout/app_bar_layout" />
 
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/circularImageView2"
-        android:layout_width="138dp"
+        android:layout_width="132dp"
         android:layout_height="132dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="76dp"
         android:src="@drawable/applogo"
         app:civ_border="true"
-        app:civ_border_color="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="@+id/start_app_bar"
-        app:layout_constraintHorizontal_bias="0.538"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/start_app_bar" />
+        app:civ_border_color="@color/colorPrimary" />
 
     <Button
         android:id="@+id/citizen_log_in"
@@ -49,4 +42,4 @@
         android:onClick="sendToPoliceLogin"
         app:layout_constraintTop_toBottomOf="@+id/citizen_log_in" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

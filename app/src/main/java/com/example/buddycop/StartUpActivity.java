@@ -27,8 +27,10 @@ public class StartUpActivity extends AppCompatActivity {
         citizenlog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                new UserCurrent(StartUpActivity.this).setUsername("general");
                 Intent citizenLogin=new Intent(getBaseContext(),LogInActivity.class);
                 startActivity(citizenLogin);
+                finish();
             }
         });
 
@@ -41,8 +43,8 @@ public class StartUpActivity extends AppCompatActivity {
             finish();
         }
         else if(type.equals("general")){
-            //startActivity(new Intent(StartUpActivity.this, LogInActivity.class));
-            //finish();
+            startActivity(new Intent(StartUpActivity.this, LogInActivity.class));
+            finish();
         }
     }
     public void sendToPoliceLogin(View view) {
