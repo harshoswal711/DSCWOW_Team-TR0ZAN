@@ -68,11 +68,6 @@ public class PoliceLogin extends AppCompatActivity {
         finish();
     }
 
-    public void sendToSelecUserType(View view) {
-        new UserCurrent(PoliceLogin.this).removeUser();
-        startActivity(new Intent(PoliceLogin.this, StartUpActivity.class));
-        finish();
-    }
 
     public void policeLogIn(View view) {
         loadingDialog.startLoadingDialog();

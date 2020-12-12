@@ -8,6 +8,8 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.buddycop.police.PoliceLogin;
+
 public class LoadingScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +20,11 @@ public class LoadingScreen extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(LoadingScreen.this, StartUpActivity.class);
+                Intent intent = new Intent(LoadingScreen.this, PoliceLogin.class);
                 startActivity(intent);
                 finish();
             }
         }, 2000);
     }
 
-    private void checkSession() {
-
-    }
 }

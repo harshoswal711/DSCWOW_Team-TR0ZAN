@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,11 +26,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.buddycop.CitizenCrimeMapActivity;
 import com.example.buddycop.R;
+import com.example.buddycop.Uploads.UploadAttendance;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,11 +44,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class PoliceHomeScreen extends AppCompatActivity {
     public DatabaseReference reference, referenceMain;
+    DatabaseReference reference2, reference3;
     FirebaseAuth fAuth;
     String uid;
     String role;
@@ -55,7 +63,8 @@ public class PoliceHomeScreen extends AppCompatActivity {
     RelativeLayout relativeLayout;
     FusedLocationProviderClient fusedLocationProviderClient;
     LatLng latLng;
-    double circle_x = 18.529492, circle_y = 73.881504, radius = 0.01, lat, lon;
+    double circle_x, circle_y, radius = 0.01, lat, lon;
+    LoadingDialog loadingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +74,13 @@ public class PoliceHomeScreen extends AppCompatActivity {
         toolbar.setTitle("Home Screen Police");
         setSupportActionBar(toolbar);
 
+        loadingDialog = new LoadingDialog(PoliceHomeScreen.this);
         fAuth = FirebaseAuth.getInstance();
         reference = FirebaseDatabase.getInstance().getReference("duty");
+        reference2 = FirebaseDatabase.getInstance().getReference("sector");
+        reference3 = FirebaseDatabase.getInstance().getReference("attendance");
+
+
         uid = fAuth.getCurrentUser().getUid();
 
         mRole = findViewById(R.id.roleName);
@@ -79,16 +93,35 @@ public class PoliceHomeScreen extends AppCompatActivity {
         reference.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     role = snapshot.child("role").getValue().toString();
                     sectorName = snapshot.child("sectorName").getValue().toString();
 
-                    mRole.setText(role);
-                    mSectorName.setText(sectorName);
+                    reference2.child(sectorName).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                String tempLat, tempLan;
+                                tempLat = snapshot.child("lat").getValue().toString();
+                                tempLan = snapshot.child("lan").getValue().toString();
 
-                    linearLayout.setVisibility(View.VISIBLE);
-                }
-                else {
+                                circle_x = Double.parseDouble(tempLat);
+                                circle_y = Double.parseDouble(tempLan);
+
+                                mRole.setText(role);
+                                mSectorName.setText(sectorName);
+
+                                linearLayout.setVisibility(View.VISIBLE);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+                } else {
                     relativeLayout.setVisibility(View.VISIBLE);
                 }
             }
@@ -103,17 +136,17 @@ public class PoliceHomeScreen extends AppCompatActivity {
 
 
     public void onTakeAttendance(View view) {
-        if(role.equals("Sector Head")){
+        if (role.equals("Sector Head")) {
             Intent intent = new Intent(PoliceHomeScreen.this, TakeAttendance.class);
             intent.putExtra("sectorName", sectorName);
             intent.putExtra("sectorHeadUid", uid);
             startActivity(intent);
             finish();
-        }
-        else {
+        } else {
             Toast.makeText(this, "You don't have authority to take others officers attendance..", Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
     public void onBackPressed() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(PoliceHomeScreen.this);
@@ -137,14 +170,37 @@ public class PoliceHomeScreen extends AppCompatActivity {
     }
 
     public void onSelfAttendance(View view) {
-        if(ContextCompat.checkSelfPermission(PoliceHomeScreen.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(PoliceHomeScreen.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(PoliceHomeScreen.this, new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION
             }, 100);
-        }
-        else {
-            getCurrentLoacation();
+        } else {
+            String date1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+
+            reference3.child(date1).child(uid).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String tempStatus = snapshot.child("status").getValue().toString();
+
+                        if (tempStatus.equals("present")) {
+                            Toast.makeText(PoliceHomeScreen.this, "Attendance is already done", Toast.LENGTH_SHORT).show();
+                        } else if (tempStatus.equals("absent")) {
+                            Toast.makeText(PoliceHomeScreen.this, "Attendance is already done", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else {
+                        getCurrentLoacation();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
         }
 
     }
@@ -170,24 +226,46 @@ public class PoliceHomeScreen extends AppCompatActivity {
                         lat = Double.parseDouble(latitude);
                         lon = Double.parseDouble(longitude);
                         isInside(circle_x, circle_y, radius, lat, lon);
-                        Toast.makeText(PoliceHomeScreen.this, ""+latitude+""+longitude, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PoliceHomeScreen.this, "" + latitude + "" + longitude, Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
-                else {
+                } else {
                 }
             }
         });
     }
 
-    public void isInside(double circle_x, double circle_y, double radius, double x, double y){
-        if((x - circle_x) * (x - circle_x) + (y- circle_y) * (y - circle_y) <= radius * radius){
+    public void isInside(double circle_x, double circle_y, double radius, double x, double y) {
+        if ((x - circle_x) * (x - circle_x) + (y - circle_y) * (y - circle_y) <= radius * radius) {
             isInside = "true";
-            Toast.makeText(this, "is inside "+isInside, Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Toast.makeText(this, "is inside"+isInside, Toast.LENGTH_SHORT).show();
+            loadingDialog.startLoadingDialog();
+            loadingDialog.setText("Creating Sector..");
+
+            String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String ts = tsLong.toString();
+
+            final UploadAttendance u = new UploadAttendance("self", uid, sectorName, "-",
+                    date, ts, latitude, longitude, "present");
+
+            reference3.child(date).child(uid).setValue(u).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    loadingDialog.dismissDialog();
+                    Toast.makeText(PoliceHomeScreen.this, "Attendance Marked successfully..", Toast.LENGTH_SHORT).show();
+                }
+
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    loadingDialog.dismissDialog();
+                    Toast.makeText(PoliceHomeScreen.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(this, "You are not present at sector.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -214,5 +292,10 @@ public class PoliceHomeScreen extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void onSendCrimeMap(View view) {
+        startActivity(new Intent(PoliceHomeScreen.this, CitizenCrimeMapActivity.class));
+        finish();
     }
 }
