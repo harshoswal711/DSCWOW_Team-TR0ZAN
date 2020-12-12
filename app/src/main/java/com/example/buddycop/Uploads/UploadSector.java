@@ -1,12 +1,12 @@
 package com.example.buddycop.Uploads;
 
 public class UploadSector {
-    String sectorName, sectorHeadName;
+    String sectorName, sectorHeadName, lat, lan;
 
     public UploadSector() {
     }
 
-    public UploadSector(String sectorName, String sectorHeadName) {
+    public UploadSector(String sectorName, String sectorHeadName, String lat, String lan) {
         this.sectorName = sectorName;
         this.sectorHeadName = sectorHeadName;
     }

@@ -9,6 +9,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -57,6 +61,10 @@ public class PoliceHomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_police_home_screen);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Home Screen Police");
+        setSupportActionBar(toolbar);
+
         fAuth = FirebaseAuth.getInstance();
         reference = FirebaseDatabase.getInstance().getReference("duty");
         uid = fAuth.getCurrentUser().getUid();
@@ -93,11 +101,6 @@ public class PoliceHomeScreen extends AppCompatActivity {
 
     }
 
-    public void logout(View view) {
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(getApplicationContext(), PoliceLogin.class));
-        finish();
-    }
 
     public void onTakeAttendance(View view) {
         if(role.equals("Sector Head")){
@@ -191,5 +194,25 @@ public class PoliceHomeScreen extends AppCompatActivity {
     public void onCreateFir(View view) {
         startActivity(new Intent(PoliceHomeScreen.this, PoliceCreateFir.class));
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), PoliceLogin.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

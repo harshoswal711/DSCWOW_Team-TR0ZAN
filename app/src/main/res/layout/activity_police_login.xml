@@ -5,63 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     tools:context=".police.PoliceLogin">
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:textAlignment="center"
-        android:text="LOGIN"
-        android:textStyle="bold"
-        android:textColor="@color/design_default_color_primary"/>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
-    <EditText
-        android:id="@+id/username"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="Enter Your E-mail"
-        android:inputType="textEmailAddress"
-        android:selectAllOnFocus="true" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="Enter Your Password"
-        android:inputType="textPassword"
-        android:selectAllOnFocus="true" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LOGIN"
+            android:textAlignment="center"
+            android:textColor="@color/design_default_color_primary"
+            android:textSize="25dp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:text="submit"
-        android:onClick="policeLogIn"
-        android:textSize="22dp" />
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:hint="Enter Your E-mail"
+            android:inputType="textEmailAddress"
+            android:selectAllOnFocus="true" />
 
-    <TextView
-        android:onClick="sendToPoliceRegestration"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:textAlignment="center"
-        android:text="Not Registered? Click Here!"
-        android:textColor="@color/design_default_color_primary"/>
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:hint="Enter Your Password"
+            android:inputType="textPassword"
+            android:selectAllOnFocus="true" />
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:onClick="policeLogIn"
+            android:text="submit"
+            android:textSize="22dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="sendToPoliceRegestration"
+            android:text="Not Registered? Click Here!"
+            android:textAlignment="center"
+            android:textColor="@color/design_default_color_primary"
+            android:textSize="25dp" />
 
 
-    <TextView
-        android:onClick="sendToSelecUserType"
-        android:layout_width="match_parent"
-        android:layout_margin="15dp"
-        android:layout_height="wrap_content"
-        android:textSize="15dp"
-        android:textAlignment="center"
-        android:text="Not Police? Click Here!"
-        android:textColor="@color/design_default_color_primary"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:onClick="sendToSelecUserType"
+            android:text="Not Police? Click Here!"
+            android:textAlignment="center"
+            android:textColor="@color/design_default_color_primary"
+            android:textSize="15dp" />
+    </LinearLayout>
+
 </LinearLayout>

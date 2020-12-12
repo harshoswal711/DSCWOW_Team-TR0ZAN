@@ -98,7 +98,7 @@ public class AdminCreateSector extends AppCompatActivity {
             mSectorName.setError("Enter Sector Name First");
         }
         else {
-            final UploadSector u = new UploadSector(sectorName, "-");
+            final UploadSector u = new UploadSector(sectorName, "-", "-","-");
 
             reference.child(sectorName).setValue(u).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

@@ -39,6 +39,11 @@ public class LogInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Citizen Login");
+        setSupportActionBar(toolbar);
+
         fAuth = FirebaseAuth.getInstance();
         reference = FirebaseDatabase.getInstance().getReference("credentials").child("general");
 
